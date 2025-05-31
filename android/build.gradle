@@ -1,0 +1,56 @@
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+def kotlinVersion = findProperty("kotlinVersion") ?: "1.8.0" // Or your project's Kotlin version
+
+// Get React Native version from the project's ext properties or use a default
+def reactNativeVersionFromExt = project.rootProject.hasProperty("reactNativeVersion") ? project.rootProject.ext.reactNativeVersion : "0.0.0"
+
+android {
+    namespace "com.rtnimagefetcher"
+    // Use compileSdkVersion from project ext or a sensible default
+    compileSdkVersion project.rootProject.hasProperty("compileSdkVersion") ? project.rootProject.ext.compileSdkVersion : 34
+
+    defaultConfig {
+        // Use minSdkVersion from project ext or a sensible default
+        minSdkVersion project.rootProject.hasProperty("minSdkVersion") ? project.rootProject.ext.minSdkVersion : 21
+        // Use targetSdkVersion from project ext or a sensible default
+        targetSdkVersion project.rootProject.hasProperty("targetSdkVersion") ? project.rootProject.ext.targetSdkVersion : 34
+        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", "true"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    lintOptions {
+        disable "RequiresOptIn"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    sourceSets {
+      main {
+        jniLibs.srcDirs = ['libs']
+        java {
+            srcDirs += "src/main/java/com/facebook/react/turbomodule/core/interfaces" // Allows us to use TurboModule
+            srcDirs += file("$buildDir/generated/source/codegen/java")
+            srcDirs += "src/main/java" // Kotlin sources
+        }
+      }
+    }
+}
+
+repositories {
+    mavenCentral()
+    google()
+    // You might need this if your main project uses a custom maven repo for React Native
+    // maven { url "../../node_modules/react-native/android" }
+}
+
+dependencies {
+    implementation "com.facebook.react:react-native:${reactNativeVersionFromExt}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    // Add other dependencies here
+} 
