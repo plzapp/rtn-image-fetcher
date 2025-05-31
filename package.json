@@ -2,9 +2,9 @@
     "name": "rtn-image-fetcher",
     "version": "0.0.1",
     "description": "A Turbo Native Module to fetch images from the camera roll with advanced filtering and sorting.",
-    "react-native": "js/RTNImageFetcherNativeComponent.ts",
-    "module": "js/RTNImageFetcherNativeComponent.ts",
-    "source": "js/RTNImageFetcherNativeComponent.ts",
+    "react-native": "js/NativeImageFetcher.ts",
+    "module": "js/NativeImageFetcher.ts",
+    "source": "js/NativeImageFetcher.ts",
     "types": "js/index.d.ts",
     "files": [
         "js",
