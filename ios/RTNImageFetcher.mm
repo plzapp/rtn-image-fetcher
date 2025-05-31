@@ -37,7 +37,9 @@ std::shared_ptr<facebook::react::TurboModule> RTNImageFetcher_init(const faceboo
     PHAccessLevel requiredAccessLevel = PHAccessLevelReadWrite; // or .addOnly if you only add assets
     [PHPhotoLibrary requestAuthorizationForAccessLevel:requiredAccessLevel handler:^(PHAuthorizationStatus status) {
         if (status != PHAuthorizationStatusAuthorized && status != PHAuthorizationStatusLimited) {
-            reject(@"PERMISSION_DENIED", @"Photo library access was denied or restricted.", nil);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                reject(@"PERMISSION_DENIED", @"Photo library access was denied or restricted.", nil);
+            });
             return;
         }
 
@@ -70,7 +72,9 @@ std::shared_ptr<facebook::react::TurboModule> RTNImageFetcher_init(const faceboo
         NSUInteger endIndex = MIN(offset + limit, totalAssets);
 
         if (offset >= totalAssets) {
-            resolve(@{@"assets": @[], @"hasNextPage": @NO, @"nextOffset": @(offset)});
+            dispatch_async(dispatch_get_main_queue(), ^{
+                resolve(@{@"assets": @[], @"hasNextPage": @NO, @"nextOffset": @(offset)});
+            });
             return;
         }
         
@@ -107,7 +111,9 @@ std::shared_ptr<facebook::react::TurboModule> RTNImageFetcher_init(const faceboo
         BOOL hasNextPage = endIndex < totalAssets;
         NSUInteger nextOffset = hasNextPage ? endIndex : offset + assetsArray.count;
 
-        resolve(@{@"assets": assetsArray, @"hasNextPage": @(hasNextPage), @"nextOffset": @(nextOffset)});
+        dispatch_async(dispatch_get_main_queue(), ^{
+            resolve(@{@"assets": assetsArray, @"hasNextPage": @(hasNextPage), @"nextOffset": @(nextOffset)});
+        });
     }];
 }
 
